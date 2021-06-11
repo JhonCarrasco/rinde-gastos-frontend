@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Modal from 'react-modal';
@@ -6,7 +6,7 @@ import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
 import validator from 'validator';
 import Swal from 'sweetalert2';
-import { removeError, setError, uiCloseModal } from '../../actions/ui';
+import { removeError, setError, uiCloseModal, uiOpenModalCompany } from '../../actions/ui';
 import { clearActiveCustomer, customerStartAddNew, customerStartUpdate } from '../../actions/customers';
 import { CompanyCollapsible } from './CompanyCollapsible';
 
@@ -109,6 +109,9 @@ export const CustomerModal = () => {
         return true;
     }
 
+    const handleClickNewCompany = () => {
+        dispatch( uiOpenModalCompany() );
+    }
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
@@ -273,14 +276,13 @@ export const CustomerModal = () => {
                 
 
                 <div className="form-group">
-                        {
-                            Companies.length !== 0 && (<CompanyCollapsible />)
-                        }
+                        
+                        <CompanyCollapsible />
                     <div>
                         <button
                             type="button"
-                            className="btn btn-success fab2"
-                            onClick={() => console.log('add company')}
+                            className={ activeCustomer ? "btn btn-success fab2" : "btn btn-success fab3"}
+                            onClick={ handleClickNewCompany }
                         >
                             <i className="fas fa-plus"></i>
                         </button>

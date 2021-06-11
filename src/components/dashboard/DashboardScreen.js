@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { customersStartLoading } from '../../actions/customers';
 import { AddNewFab } from '../ui/AddNewFab';
 import { Navbar } from '../ui/Navbar'
+import { CompanyModal } from './CompanyModal';
 import { CustomerModal } from './CustomerModal';
 import { TableCustomers } from './TableCustomers'
 
@@ -10,19 +11,13 @@ export const DashboardScreen = () => {
 
     const dispatch = useDispatch();
     const { customers, activeCustomer } = useSelector( state => state.customer );
-    const { uid } = useSelector( state => state.auth );
-    
+        
     useEffect(() => {
         
         dispatch( customersStartLoading() );
 
     }, [ dispatch ])
 
-
-    // const onDoubleClick = (e) => {
-    //     // console.log(e);
-    //     dispatch( uiOpenModal() );
-    // }
     
     return (
         <div >
@@ -35,12 +30,13 @@ export const DashboardScreen = () => {
 
 
             {/* {
-                (activeEvent) && <DeleteEventFab />
+                (activeCustomer) && <DeleteEventFab />
             } */}
             
 
             <CustomerModal />
 
+            <CompanyModal />
 
 
         </div>

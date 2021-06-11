@@ -3,6 +3,8 @@ import { Accordion, Card, Button } from 'react-bootstrap'
 import { TableCompanies } from './TableCompanies'
 
 export const CompanyCollapsible = () => {
+    
+    
     return (
 
         <Accordion defaultActiveKey="0">
@@ -10,11 +12,13 @@ export const CompanyCollapsible = () => {
                 <Card.Header>
                     <Accordion.Toggle as={Button} variant="link" eventKey="1">
                         Empresas
-            </Accordion.Toggle>
+                    </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">
                     <Card.Body>
-                        <TableCompanies />
+                        
+                            <TableCompanies />
+                        
                     </Card.Body>
                 </Accordion.Collapse>
             </Card>

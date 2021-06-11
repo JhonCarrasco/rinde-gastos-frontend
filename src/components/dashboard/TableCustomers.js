@@ -1,13 +1,17 @@
 import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { companyLoaded } from '../../actions/company';
+
 import { customerSetActive } from '../../actions/customers';
 import { uiOpenModal } from '../../actions/ui';
 
 export const TableCustomers = ({ customers }) => {
 
+    const { activeCustomer } = useSelector(state => state.customer);
     const dispatch = useDispatch();
-
+    
+    
     const columns = [{
         dataField: 'Rut',
         text: 'Rut'
@@ -21,20 +25,12 @@ export const TableCustomers = ({ customers }) => {
 
     const rowEvents = {
         onClick: (e, row, rowIndex) => {
-          //   console.log(e);
-          //   console.log(row);
-          // console.log(`clicked on row with index: ${rowIndex}`);
           dispatch( customerSetActive( row ) );
         },
         onDoubleClick: (e, row, rowIndex) => {
           dispatch( uiOpenModal() );
+          dispatch( companyLoaded(activeCustomer.Companies) );
         },
-        // onContextMenu: (e, row, rowIndex) => {
-        //   alert('onContextMenu')
-        // },
-        // onAuxClick: (e, row, rowIndex) => {
-        //   alert('onAuxClick')
-        // },
         
       };
 

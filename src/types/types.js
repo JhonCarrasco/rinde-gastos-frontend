@@ -6,16 +6,21 @@ export const types = {
     uiSetError: '[ui] Set Error',
     uiRemoveError: '[ui] Remove Error',
 
+    uiOpenModalCompany: '[company] Open modal company',
+    uiCloseModalCompany: '[company] Close modal company',
+    uiSetErrorCompany: '[company] Set Error company',
+    uiRemoveErrorCompany: '[company] Remove Error company',
+
     
     eventSetActive: '[event] Set Active',
     eventLogout: '[event] Logout event',
     
-    evetStartAddNew: '[event] Start add new',
-    eventAddNew: '[event] Add new',
-    eventClearActiveEvent: '[event] Clear active event',
-    eventUpdated: '[event] Event updated',
-    eventDeleted: '[event] Event deleted',
-    eventLoaded: '[event] Events loaded',
+    // evetStartAddNew: '[event] Start add new',
+    // eventAddNew: '[event] Add new',
+    // eventClearActiveEvent: '[event] Clear active event',
+    // eventUpdated: '[event] Event updated',
+    // eventDeleted: '[event] Event deleted',
+    // eventLoaded: '[event] Events loaded',
 
 
     authCheckingFinish: '[auth] Finish checking login state',
@@ -32,4 +37,12 @@ export const types = {
     customerDeleted: '[customer] Customer deleted',
     customerSetActive: '[customer] Set Active',
     customerLogout: '[customer] Logout customer',
+
+    companyLoaded: '[company] Companies loaded',
+    clearActiveCompany: '[company] Clear active company',
+    companyAddNew: '[company] Add new company',
+    companyUpdated: '[company] Company updated',
+    companyDeleted: '[company] Company deleted',
+    companySetActive: '[company] Set Active Company',
+    companyLogout: '[company] Logout company',
 }

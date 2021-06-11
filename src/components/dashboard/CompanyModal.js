@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Modal from 'react-modal';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
-import validator from 'validator';
-import Swal from 'sweetalert2';
-import { removeError, setError, uiCloseModal } from '../../actions/ui';
-import { clearActiveCustomer, customerStartAddNew, customerStartUpdate } from '../../actions/customers';
-import { CompanyCollapsible } from './CompanyCollapsible';
+
+// import validator from 'validator';
+// import Swal from 'sweetalert2';
+import { removeErrorCompany, setErrorCompany, uiCloseModalCompany } from '../../actions/ui';
+import { clearActiveCompany, companyStartAddNew, companyStartUpdate } from '../../actions/company';
+
 
 
 Modal.setAppElement('body');
@@ -26,41 +25,80 @@ const customStyles = {
     }
 };
 
-const initCustomer = {
+const initCompany = {
 
-    Rut: '',
-    CustomerName: '',
-    Email: '',
-    Password: '',
-    Password2: '',
-    LogoUrl: '',
-    Role: '',
-    Companies: []
+    Id: '',
+    Code: '',
+    Name: '',
+    RindeGastosToken: '',
+    ServiceLayerIntegration: null,
+    DiApiLayerIntegration: null,
+    DiApiLayerBaseUrl: '',
+    SapServiceLayerBaseUrl: null,
+    SapServiceLayerUserName: null,
+    SapServiceLayerPassword: null,
+    SapServiceLayerCompanyDB: null,
+    SapServiceLayerNode: null,
+    EnableIntegration: null,
+    CreateInvoiceForExpense: null,
+    InvoiceDraftForExpense: null,
+    IncludeInvoiceForExpenseInJournal: null,
+    CreateJournalForInvoice: null,
+    ExtraFieldForDocumentType: null,
+    ExtraFieldForProviderRut: null,
+    ExtraFieldForDocumentNumber: null,
+    LabelForInvoiceDocumentType: null,
+    RindeGastosSapIndicator: '',
+    AssignUserToJournalLine: null,
+    AssignCenterToJournalLine: null,
+    AssignProjectToJournalLine: null,
+    AssignExpenseToInvoice: null,
+    AssignIndicatorToJournal: null,
+    IntegrationNotificationEmail: null,
+    SendNotificationEmail: null,
+    Testing: null,
+    CategoriesAccounts: null,
+    ExtraFieldAccounts: null,
+    ExtraFieldForAccountOrigin: null,
+    ExtraFieldForCreditAccountOrigin: null,
+    ExtraFieldForProjectOrigin: null,
+    ExtraFieldForCenterOrigin: null,
+    ExtraFieldForProject: null,
+    ExtraFieldForAccount: null,
+    ExtraFieldForCreditAccount: null,
+    ExtraFieldForCenterCost: null,
+    AssignJournalToEmployee: null,
+    UseCustomStatus: null,
+    CustomStatus: null,
+    ApplyCustomRules: null,
+    CustomRules: null,
+    TargetDocument: '',
+    CreateTargetDocumentForExpenses: null,
+    ItemCodeOrigin: '',
+    ExtraFieldForItemCodeOrigin: null,
+    DocumentBusinessPartnerOrigin: '',
+    ExtraFieldForDocumentBusinessPartner: null
 }
 
 
 
-export const CustomerModal = () => {
+export const CompanyModal = () => {
 
-    const { modalOpen } = useSelector(state => state.ui);
-    const { activeCustomer } = useSelector(state => state.customer);
-    const { msgError } = useSelector(state => state.ui);
+    const { companyModalOpen, companyMsgError } = useSelector(state => state.ui);
+    const { activeCompany } = useSelector(state => state.company);
     const dispatch = useDispatch();
 
+    const [formValues, setFormValues] = useState(initCompany);
 
 
-    const [formValues, setFormValues] = useState(initCustomer);
-    const { Rut, CustomerName, Email, Password, LogoUrl, Role, Password2, Companies } = formValues;
-
-
-    useEffect(() => {
+    useEffect(() => {        
         // New or Update
-        if (activeCustomer) {
-            setFormValues(activeCustomer);
+        if (activeCompany) {
+            setFormValues(activeCompany);
         } else {
-            setFormValues(initCustomer);
+            setFormValues(initCompany);
         }
-    }, [activeCustomer, setFormValues])
+    }, [activeCompany, setFormValues])
 
 
 
@@ -81,50 +119,49 @@ export const CustomerModal = () => {
 
     const closeModal = () => {
         // TODO: cerrar el modal
-        dispatch(uiCloseModal());
-        dispatch(clearActiveCustomer());
-        setFormValues(initCustomer);
+        dispatch(uiCloseModalCompany());
+        dispatch(clearActiveCompany());
+        setFormValues(initCompany);
     }
 
     const isFormValid = () => {
 
-        if (Rut.trim().length === 0) {
-            dispatch(setError('Rut es requerido'))
-            return false;
-        } else if (CustomerName.trim().length === 0) {
-            dispatch(setError('Nombre es requerido'))
-            return false;
-        } else if (!validator.isEmail(Email)) {
-            dispatch(setError('Email no es valido'))
-            return false;
-        } else if (!!!activeCustomer && (Password !== Password2 || Password.length < 6)) {
-            dispatch(setError('Las contraseñas deben tener al menos 6 caracteres y deben ser iguales'))
-            return false
-        } else if (Role.trim().length === 0) {
-            dispatch(setError('Rol es requerido'))
-            return false;
-        }
+        // if (Rut.trim().length === 0) {
+        //     dispatch(setErrorCompany('Rut es requerido'))
+        //     return false;
+        // } else if (CustomerName.trim().length === 0) {
+        //     dispatch(setErrorCompany('Nombre es requerido'))
+        //     return false;
+        // } else if (!validator.isEmail(Email)) {
+        //     dispatch(setErrorCompany('Email no es valido'))
+        //     return false;
+        // } else if (Role.trim().length === 0) {
+        //     dispatch(setErrorCompany('Rol es requerido'))
+        //     return false;
+        // }
 
-        dispatch(removeError());
+        dispatch(removeErrorCompany());
         return true;
     }
+   
 
+    
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
 
         if (!isFormValid(formValues)) {
-            return console.log('invalido')
+            return console.log('invalido company')
         }
         else {
-            console.log('valido')
+            console.log('valido company')
         }
 
 
-        // if ( activeCustomer ) {
-        //     dispatch( customerStartUpdate( formValues ) )
+        // if ( activeCompany ) {
+        //     dispatch( companyStartUpdate( formValues ) )
         // } else {
-        //     dispatch( customerStartAddNew( formValues ) );
+        //     dispatch( companyStartAddNew( formValues ) );
         // }
 
 
@@ -134,128 +171,83 @@ export const CustomerModal = () => {
     }
 
 
+    
 
     return (
         <Modal
-            isOpen={modalOpen}
+            isOpen={companyModalOpen}
             onRequestClose={closeModal}
             style={customStyles}
             closeTimeoutMS={200}
             className="modal"
             overlayClassName="modal-fondo"
         >
-            <h1> {(activeCustomer) ? 'Editar Cliente' : 'Nuevo Cliente'} </h1>
+            <h1> {(activeCompany) ? 'Editar Empresa' : 'Nuevo Empresa'} </h1>
             <hr />
             <form
                 className="container"
                 onSubmit={handleSubmitForm}
             >
                 {
-                    msgError &&
+                    companyMsgError &&
                     (
                         <div className="alert-error">
-                            { msgError}
+                            {companyMsgError}
                         </div>
                     )
                 }
 
                 <div className="form-group">
-                    <label>Rut</label>
+                    <label>Code</label>
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="12345678-9"
-                        name="Rut"
+                        placeholder="Code"
+                        name="Code"
                         autoComplete="off"
-                        value={Rut}
+                        value={formValues.Code}
                         onChange={handleInputChange}
                     />
-
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
                 </div>
+
                 <div className="form-group">
-                    <label>Nombre</label>
+                    <label>Name</label>
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Nombre"
-                        name="CustomerName"
+                        placeholder="Name"
+                        name="Name"
                         autoComplete="off"
-                        value={CustomerName}
+                        value={formValues.Name}
                         onChange={handleInputChange}
                     />
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
                 </div>
+
                 <div className="form-group">
-                    <label>Email</label>
+                    <label>RindeGastosToken</label>
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="Email"
-                        name="Email"
+                        placeholder="RindeGastosToken"
+                        name="RindeGastosToken"
                         autoComplete="off"
-                        value={Email}
+                        value={formValues.RindeGastosToken}
                         onChange={handleInputChange}
                     />
-
                 </div>
 
 
-                {
-                    !activeCustomer &&
-                    <div>
-                        <div className="form-group">
-                            <label>Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                placeholder="Password"
-                                name="Password"
-                                autoComplete="off"
-                                value={Password}
-                                onChange={handleInputChange}
-                            />
-                            {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
-                        </div>
-                        <div className="form-group">
-                            <label>Confirmar Password</label>
-                            <input
-                                type="password"
-                                className="form-control"
-                                placeholder="Confirmar password"
-                                name="Password2"
-                                autoComplete="off"
-                                value={Password2}
-                                onChange={handleInputChange}
-                            />
-                            {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <div className="input-group-text">
+                            <input type="checkbox" aria-label="Checkbox for following text input" />
                         </div>
                     </div>
-                }
-                <div className="form-group">
-                    <label>Logo</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Url"
-                        name="LogoUrl"
-                        autoComplete="off"
-                        value={LogoUrl}
-                        onChange={handleInputChange}
-                    />
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
+                    <input type="text" className="form-control" aria-label="Text input with checkbox" />
                 </div>
-                <div className="form-group">
 
-                    <DropdownButton
-                        // key={variant}
-                        id="Roles"
-                        variant="secondary"
-                        title="Roles"
-                    >
-                        <Dropdown.Item eventKey="1" onClick={() => handleRole('Admin')}>Admin</Dropdown.Item>
-                        <Dropdown.Item eventKey="2" onClick={() => handleRole('Customer')}>Customer</Dropdown.Item>
-                    </DropdownButton>
+                {/* <div className="form-group">                    
                     <input
                         type="text"
                         className="form-control mt-1"
@@ -266,42 +258,19 @@ export const CustomerModal = () => {
                         onChange={handleInputChange}
                         readOnly
                     />
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
-                </div>
+                </div> */}
 
 
-                
 
-                <div className="form-group">
-                        {
-                            Companies.length !== 0 && (<CompanyCollapsible />)
-                        }
-                    <div>
-                        <button
-                            type="button"
-                            className="btn btn-success fab2"
-                            onClick={() => console.log('add company')}
-                        >
-                            <i className="fas fa-plus"></i>
-                        </button>
-                        
-                    </div>
-                </div>
 
-                        
 
-                        <button
-                            type="submit"
-                            className="btn btn-outline-primary btn-block mt-3"
-                        >
-                            <i className="far fa-save"></i>
-                            <span>{(activeCustomer) ? 'Actualizar' : 'Registrar'}</span>
-                        </button>
-
-                        {/* <Button variant="primary" type="submit" >
+                <button
+                    type="submit"
+                    className="btn btn-outline-primary btn-block mt-3"
+                >
                     <i className="far fa-save"></i>
-                    <span>{(activeCustomer) ? 'Actualizar' : 'Registrar'}</span>
-                </Button> */}
+                    <span>{(activeCompany) ? 'Actualizar Empresa' : 'Registrar Empresa'}</span>
+                </button>
 
             </form>
 

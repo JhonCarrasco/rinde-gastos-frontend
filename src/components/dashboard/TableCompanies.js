@@ -1,15 +1,17 @@
 import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useDispatch, useSelector } from 'react-redux';
-import { customerSetActive } from '../../actions/customers';
-// import { uiOpenModal } from '../../actions/ui';
+import { companySetActive } from '../../actions/company';
+import { uiOpenModalCompany } from '../../actions/ui';
+
 
 export const TableCompanies = () => {
 
-  const { activeCustomer } = useSelector(state => state.customer);
+  const { companies } = useSelector(state => state.company);
     const dispatch = useDispatch();
 
-    const { Companies } = activeCustomer;
+    
+
 
 
     const columns = [{
@@ -20,12 +22,10 @@ export const TableCompanies = () => {
 
     const rowEvents = {
         onClick: (e, row, rowIndex) => {
-          console.log("click compañia")
-          // dispatch( customerSetActive( row ) );
+          dispatch( companySetActive( row ) );
         },
         onDoubleClick: (e, row, rowIndex) => {
-          console.log("doble click compañia")
-          // dispatch( uiOpenModal() );
+          dispatch( uiOpenModalCompany() );
         }        
       };
 
@@ -45,8 +45,8 @@ export const TableCompanies = () => {
       };
       
 
-      console.log(Companies)
+      
     return (
-        <BootstrapTable keyField='Code' data={ Companies } columns={ columns } rowEvents={ rowEvents } selectRow={ selectRow } rowStyle={ rowStyle } />
+      <BootstrapTable keyField='Code' data={ companies } columns={ columns } rowEvents={ rowEvents } selectRow={ selectRow } rowStyle={ rowStyle } />
     )
 }
