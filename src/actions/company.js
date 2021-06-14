@@ -26,7 +26,7 @@ export const companyStartAddNew = ( company ) => {
 
 
 
-const companyAddNew = (company) => ({
+export const companyAddNew = (company) => ({
     type: types.companyAddNew,
     payload: company
 });
@@ -61,7 +61,7 @@ export const companyStartUpdate = ( event ) => {
     }
 }
 
-const companyUpdated = ( company ) => ({
+export const companyUpdated = ( company ) => ({
     type: types.companyUpdated,
     payload: company
 });

@@ -33,13 +33,13 @@ export const companyReducer = ( state = initialState, action ) => {
             }
 
 
-        // case types.eventUpdated:
-        //     return {
-        //         ...state,
-        //         events: state.events.map(
-        //             e => ( e.id === action.payload.id ) ? action.payload : e
-        //         )
-        //     }
+        case types.companyUpdated:
+            return {
+                ...state,
+                companies: state.companies.map(
+                    c => ( c.Code === action.payload.Code ) ? action.payload : c
+                )
+            }
         
         // case types.eventDeleted:
         //     return {

@@ -6,7 +6,7 @@ import Modal from 'react-modal';
 // import validator from 'validator';
 // import Swal from 'sweetalert2';
 import { removeErrorCompany, setErrorCompany, uiCloseModalCompany } from '../../actions/ui';
-import { clearActiveCompany, companyStartAddNew, companyStartUpdate } from '../../actions/company';
+import { clearActiveCompany, companyAddNew, companyStartAddNew, companyStartUpdate, companyUpdated } from '../../actions/company';
 
 
 
@@ -27,13 +27,13 @@ const customStyles = {
 
 const initCompany = {
 
-    Id: '',
-    Code: '',
-    Name: '',
-    RindeGastosToken: '',
+    Id: null,
+    Code: null,
+    Name: null,
+    RindeGastosToken: null,
     ServiceLayerIntegration: null,
     DiApiLayerIntegration: null,
-    DiApiLayerBaseUrl: '',
+    DiApiLayerBaseUrl: null,
     SapServiceLayerBaseUrl: null,
     SapServiceLayerUserName: null,
     SapServiceLayerPassword: null,
@@ -48,7 +48,7 @@ const initCompany = {
     ExtraFieldForProviderRut: null,
     ExtraFieldForDocumentNumber: null,
     LabelForInvoiceDocumentType: null,
-    RindeGastosSapIndicator: '',
+    RindeGastosSapIndicator: null,
     AssignUserToJournalLine: null,
     AssignCenterToJournalLine: null,
     AssignProjectToJournalLine: null,
@@ -72,11 +72,11 @@ const initCompany = {
     CustomStatus: null,
     ApplyCustomRules: null,
     CustomRules: null,
-    TargetDocument: '',
+    TargetDocument: null,
     CreateTargetDocumentForExpenses: null,
-    ItemCodeOrigin: '',
+    ItemCodeOrigin: null,
     ExtraFieldForItemCodeOrigin: null,
-    DocumentBusinessPartnerOrigin: '',
+    DocumentBusinessPartnerOrigin: null,
     ExtraFieldForDocumentBusinessPartner: null
 }
 
@@ -91,7 +91,7 @@ export const CompanyModal = () => {
     const [formValues, setFormValues] = useState(initCompany);
 
 
-    useEffect(() => {        
+    useEffect(() => {
         // New or Update
         if (activeCompany) {
             setFormValues(activeCompany);
@@ -109,10 +109,10 @@ export const CompanyModal = () => {
         });
     }
 
-    const handleRole = (RoleSelected) => {
+    const handleChange = ({target}) => {
         setFormValues({
             ...formValues,
-            Role: RoleSelected
+            [target.name]: target.checked
         })
     }
 
@@ -143,9 +143,9 @@ export const CompanyModal = () => {
         dispatch(removeErrorCompany());
         return true;
     }
-   
 
-    
+
+
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
@@ -158,11 +158,13 @@ export const CompanyModal = () => {
         }
 
 
-        // if ( activeCompany ) {
-        //     dispatch( companyStartUpdate( formValues ) )
-        // } else {
-        //     dispatch( companyStartAddNew( formValues ) );
-        // }
+        if ( activeCompany ) {
+            console.log('companymodal', 'update')
+            dispatch( companyUpdated( formValues ) )
+        } else {
+            dispatch( companyAddNew( formValues ) );
+            console.log('companymodal', 'addnew')
+        }
 
 
 
@@ -171,7 +173,7 @@ export const CompanyModal = () => {
     }
 
 
-    
+
 
     return (
         <Modal
@@ -197,69 +199,636 @@ export const CompanyModal = () => {
                     )
                 }
 
-                <div className="form-group">
-                    <label>Code</label>
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">Code</span>
+                    </div>
                     <input
                         type="text"
                         className="form-control"
                         placeholder="Code"
                         name="Code"
                         autoComplete="off"
-                        value={formValues.Code}
+                        value={formValues.Code || ''}
                         onChange={handleInputChange}
+                        readOnly={activeCompany ? true : false}
                     />
                 </div>
 
-                <div className="form-group">
-                    <label>Name</label>
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">Name</span>
+                    </div>
                     <input
                         type="text"
                         className="form-control"
                         placeholder="Name"
                         name="Name"
                         autoComplete="off"
-                        value={formValues.Name}
+                        value={formValues.Name || ''}
                         onChange={handleInputChange}
                     />
                 </div>
 
-                <div className="form-group">
-                    <label>RindeGastosToken</label>
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">RindeGastosToken</span>
+                    </div>
                     <input
                         type="text"
                         className="form-control"
                         placeholder="RindeGastosToken"
                         name="RindeGastosToken"
                         autoComplete="off"
-                        value={formValues.RindeGastosToken}
+                        value={formValues.RindeGastosToken || ''}
                         onChange={handleInputChange}
                     />
                 </div>
 
+                <div className="input-group mb-3">
+                    <span className="input-group-text col-10">ServiceLayerIntegration</span>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="ServiceLayerIntegration" checked={formValues.ServiceLayerIntegration || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
 
+                <div className="input-group mb-3">
+                    <span className="input-group-text col-10">DiApiLayerIntegration</span>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="DiApiLayerIntegration" checked={formValues.DiApiLayerIntegration || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
 
                 <div className="input-group mb-3">
                     <div className="input-group-prepend">
-                        <div className="input-group-text">
-                            <input type="checkbox" aria-label="Checkbox for following text input" />
-                        </div>
+                        <span className="input-group-text">DiApiLayerBaseUrl</span>
                     </div>
-                    <input type="text" className="form-control" aria-label="Text input with checkbox" />
-                </div>
-
-                {/* <div className="form-group">                    
                     <input
                         type="text"
-                        className="form-control mt-1"
-                        placeholder="Role"
-                        name="Role"
+                        className="form-control"
+                        placeholder="DiApiLayerBaseUrl"
+                        name="DiApiLayerBaseUrl"
                         autoComplete="off"
-                        value={Role}
+                        value={formValues.DiApiLayerBaseUrl || ''}
                         onChange={handleInputChange}
-                        readOnly
                     />
-                </div> */}
+                </div>
 
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">SapServiceLayerBaseUrl</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="SapServiceLayerBaseUrl"
+                        name="SapServiceLayerBaseUrl"
+                        autoComplete="off"
+                        value={formValues.SapServiceLayerBaseUrl || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">SapServiceLayerUserName</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="SapServiceLayerUserName"
+                        name="SapServiceLayerUserName"
+                        autoComplete="off"
+                        value={formValues.SapServiceLayerUserName || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">SapServiceLayerPassword</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="SapServiceLayerPassword"
+                        name="SapServiceLayerPassword"
+                        autoComplete="off"
+                        value={formValues.SapServiceLayerPassword || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">SapServiceLayerCompanyDB</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="SapServiceLayerCompanyDB"
+                        name="SapServiceLayerCompanyDB"
+                        autoComplete="off"
+                        value={formValues.SapServiceLayerCompanyDB || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">SapServiceLayerNode</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="SapServiceLayerNode"
+                        name="SapServiceLayerNode"
+                        autoComplete="off"
+                        value={formValues.SapServiceLayerNode || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">EnableIntegration</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="EnableIntegration" checked={formValues.EnableIntegration || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">CreateInvoiceForExpense</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="CreateInvoiceForExpense" checked={formValues.CreateInvoiceForExpense || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">InvoiceDraftForExpense</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="InvoiceDraftForExpense" checked={formValues.InvoiceDraftForExpense || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">IncludeInvoiceForExpenseInJournal</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="IncludeInvoiceForExpenseInJournal" checked={formValues.IncludeInvoiceForExpenseInJournal || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">CreateJournalForInvoice</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="CreateJournalForInvoice" checked={formValues.CreateJournalForInvoice || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForDocumentType</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForDocumentType"
+                        name="ExtraFieldForDocumentType"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForDocumentType || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForProviderRut</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForProviderRut"
+                        name="ExtraFieldForProviderRut"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForProviderRut || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForDocumentNumber</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForDocumentNumber"
+                        name="ExtraFieldForDocumentNumber"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForDocumentNumber || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">LabelForInvoiceDocumentType</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="LabelForInvoiceDocumentType"
+                        name="LabelForInvoiceDocumentType"
+                        autoComplete="off"
+                        value={formValues.LabelForInvoiceDocumentType || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">RindeGastosSapIndicator</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="RindeGastosSapIndicator"
+                        name="RindeGastosSapIndicator"
+                        autoComplete="off"
+                        value={formValues.RindeGastosSapIndicator || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">AssignUserToJournalLine</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="AssignUserToJournalLine" checked={formValues.AssignUserToJournalLine || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">AssignCenterToJournalLine</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="AssignCenterToJournalLine" checked={formValues.AssignCenterToJournalLine || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">AssignProjectToJournalLine</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="AssignProjectToJournalLine" checked={formValues.AssignProjectToJournalLine || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">AssignExpenseToInvoice</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="AssignExpenseToInvoice" checked={formValues.AssignExpenseToInvoice || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">AssignIndicatorToJournal</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="AssignIndicatorToJournal" checked={formValues.AssignIndicatorToJournal || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">IntegrationNotificationEmail</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="IntegrationNotificationEmail"
+                        name="IntegrationNotificationEmail"
+                        autoComplete="off"
+                        value={formValues.IntegrationNotificationEmail || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">SendNotificationEmail</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="SendNotificationEmail" checked={formValues.SendNotificationEmail || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">Testing</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="Testing" checked={formValues.Testing || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">CategoriesAccounts</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="CategoriesAccounts" checked={formValues.CategoriesAccounts || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">ExtraFieldAccounts</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="ExtraFieldAccounts" checked={formValues.ExtraFieldAccounts || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForAccountOrigin</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForAccountOrigin"
+                        name="ExtraFieldForAccountOrigin"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForAccountOrigin || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForCreditAccountOrigin</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForCreditAccountOrigin"
+                        name="ExtraFieldForCreditAccountOrigin"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForCreditAccountOrigin || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForProjectOrigin</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForProjectOrigin"
+                        name="ExtraFieldForProjectOrigin"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForProjectOrigin || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForCenterOrigin</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForCenterOrigin"
+                        name="ExtraFieldForCenterOrigin"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForCenterOrigin || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForProject</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForProject"
+                        name="ExtraFieldForProject"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForProject || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForAccount</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForAccount"
+                        name="ExtraFieldForAccount"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForAccount || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForCreditAccount</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForCreditAccount"
+                        name="ExtraFieldForCreditAccount"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForCreditAccount || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForCenterCost</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForCenterCost"
+                        name="ExtraFieldForCenterCost"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForCenterCost || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">AssignJournalToEmployee</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="AssignJournalToEmployee" checked={formValues.AssignJournalToEmployee || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">UseCustomStatus</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="UseCustomStatus" checked={formValues.UseCustomStatus || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">CustomStatus</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="CustomStatus"
+                        name="CustomStatus"
+                        autoComplete="off"
+                        value={formValues.CustomStatus || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">ApplyCustomRules</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="ApplyCustomRules" value={formValues.ApplyCustomRules || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+  
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">CustomRules</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="CustomRules"
+                        name="CustomRules"
+                        autoComplete="off"
+                        value={formValues.CustomRules || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">TargetDocument</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="TargetDocument"
+                        name="TargetDocument"
+                        autoComplete="off"
+                        value={formValues.TargetDocument || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <label className="input-group-text col-10">CreateTargetDocumentForExpenses</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" name="CreateTargetDocumentForExpenses" checked={formValues.CreateTargetDocumentForExpenses || false} onChange={handleChange} />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ItemCodeOrigin</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ItemCodeOrigin"
+                        name="ItemCodeOrigin"
+                        autoComplete="off"
+                        value={formValues.ItemCodeOrigin || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForItemCodeOrigin</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForItemCodeOrigin"
+                        name="ExtraFieldForItemCodeOrigin"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForItemCodeOrigin || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">DocumentBusinessPartnerOrigin</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="DocumentBusinessPartnerOrigin"
+                        name="DocumentBusinessPartnerOrigin"
+                        autoComplete="off"
+                        value={formValues.DocumentBusinessPartnerOrigin || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
+
+                <div className="input-group mb-3">
+                    <div className="input-group-prepend">
+                        <span className="input-group-text">ExtraFieldForDocumentBusinessPartner</span>
+                    </div>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="ExtraFieldForDocumentBusinessPartner"
+                        name="ExtraFieldForDocumentBusinessPartner"
+                        autoComplete="off"
+                        value={formValues.ExtraFieldForDocumentBusinessPartner || ''}
+                        onChange={handleInputChange}
+                    />
+                </div>
 
 
 
