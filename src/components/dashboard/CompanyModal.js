@@ -28,12 +28,12 @@ const customStyles = {
 const initCompany = {
 
     Id: null,
-    Code: null,
-    Name: null,
-    RindeGastosToken: null,
-    ServiceLayerIntegration: null,
+    Code: 'E1',
+    Name: 'Empresa1',
+    RindeGastosToken: 'abc123',
+    ServiceLayerIntegration: true,
     DiApiLayerIntegration: null,
-    DiApiLayerBaseUrl: null,
+    DiApiLayerBaseUrl: 'http://localhost:3000',
     SapServiceLayerBaseUrl: null,
     SapServiceLayerUserName: null,
     SapServiceLayerPassword: null,
@@ -158,12 +158,10 @@ export const CompanyModal = () => {
         }
 
 
-        if ( activeCompany ) {
-            console.log('companymodal', 'update')
+        if ( activeCompany ) {            
             dispatch( companyUpdated( formValues ) )
         } else {
-            dispatch( companyAddNew( formValues ) );
-            console.log('companymodal', 'addnew')
+            dispatch( companyAddNew( formValues ) );            
         }
 
 
@@ -177,12 +175,14 @@ export const CompanyModal = () => {
 
     return (
         <Modal
+            
             isOpen={companyModalOpen}
             onRequestClose={closeModal}
             style={customStyles}
             closeTimeoutMS={200}
             className="modal"
             overlayClassName="modal-fondo"
+
         >
             <h1> {(activeCompany) ? 'Editar Empresa' : 'Nuevo Empresa'} </h1>
             <hr />

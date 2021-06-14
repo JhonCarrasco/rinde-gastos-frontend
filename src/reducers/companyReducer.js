@@ -56,10 +56,10 @@ export const companyReducer = ( state = initialState, action ) => {
                 companies: [ ...action.payload ]
             }
 
-        // case types.eventLogout:
-        //     return {
-        //         ...initialState
-        //     }
+        case types.companyLogout:
+            return {
+                ...initialState
+            }
 
         default:
             return state;

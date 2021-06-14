@@ -2,19 +2,20 @@ import Swal from 'sweetalert2';
 
 import { types } from '../types/types';
 import { fetchConToken } from '../helpers/fetch';
-// import { prepareEvents } from '../helpers/prepareEvents';
 
 
 export const customerStartAddNew = ( customer ) => {
     return async( dispatch, getState ) => {
 
-        // const { uid, name } = getState().auth;
+        const { companies } = getState().company;
+        let { Rut, CustomerName, Email, Password, LogoUrl, Role, Companies } = customer;
+        // console.log({ Rut, CustomerName, Email, Password, LogoUrl, Role, Companies })
 
         try {
-            const resp = await fetchConToken('auth/register', customer, 'POST');
-            const body = await resp.json();
+            // const resp = await fetchConToken('auth/register', customer, 'POST');
+            // const body = await resp.json();
 
-            console.log(body)
+            // console.log(body)
 
             // if ( body.ok ) {
             //     event.id = body.evento.id;
@@ -25,6 +26,10 @@ export const customerStartAddNew = ( customer ) => {
             //     console.log( event );
             //     dispatch( customerAddNew( event ) );
             // }
+
+            
+            Companies = [...companies];                      
+            dispatch( customerAddNew({ Rut, CustomerName, Email, Password, LogoUrl, Role, Companies }));
 
 
         } catch (error) {
@@ -52,18 +57,25 @@ export const clearActiveCustomer = () => ({ type: types.clearActiveCustomer });
 
 
 
-export const customerStartUpdate = ( event ) => {
-    return async(dispatch) => {
+export const customerStartUpdate = ( customer ) => {
+    return async(dispatch, getState) => {
 
+        const { companies } = getState().company;
+        let { Id, Rut, CustomerName, Email, Password, LogoUrl, Role, Companies } = customer;
+        // console.log({ Id, Rut, CustomerName, Email, Password, LogoUrl, Role })
         try {
-            const resp = await fetchConToken(`events/${ event.id }`, event, 'PUT' );
-            const body = await resp.json();
+            // const resp = await fetchConToken(`events/${ event.id }`, event, 'PUT' );
+            // const body = await resp.json();
 
-            if ( body.ok ) {
-                dispatch( eventUpdated( event ) );
-            } else {
-                Swal.fire('Error', body.msg, 'error');
-            }
+            // if ( body.ok ) {
+            //     dispatch( eventUpdated( event ) );
+            // } else {
+            //     Swal.fire('Error', body.msg, 'error');
+            // }
+            
+            Companies = [...companies];            
+            dispatch( customerUpdated({ Id, Rut, CustomerName, Email, Password, LogoUrl, Role, Companies }));
+            
 
 
         } catch (error) {
@@ -73,25 +85,25 @@ export const customerStartUpdate = ( event ) => {
     }
 }
 
-const eventUpdated = ( event ) => ({
-    type: types.eventUpdated,
-    payload: event
+const customerUpdated = ( customer ) => ({
+    type: types.customerUpdated,
+    payload: customer
 });
 
 
 export const eventStartDelete = () => {
     return async ( dispatch, getState ) => {
 
-        const { id } = getState().calendar.activeEvent;
+        // const { id } = getState().calendar.activeEvent;
         try {
-            const resp = await fetchConToken(`events/${ id }`, {}, 'DELETE' );
-            const body = await resp.json();
+            // const resp = await fetchConToken(`events/${ id }`, {}, 'DELETE' );
+            // const body = await resp.json();
 
-            if ( body.ok ) {
-                dispatch( eventDeleted() );
-            } else {
-                Swal.fire('Error', body.msg, 'error');
-            }
+            // if ( body.ok ) {
+            //     dispatch( eventDeleted() );
+            // } else {
+            //     Swal.fire('Error', body.msg, 'error');
+            // }
 
 
         } catch (error) {

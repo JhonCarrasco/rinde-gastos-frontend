@@ -1,15 +1,4 @@
 import { types } from '../types/types';
-// {
-//     id: 'askdjhaksdjas',
-//     title: 'Cumpleaños del jefe',
-//     start: moment().toDate(),
-//     end: moment().add( 2, 'hours' ).toDate(),
-//     notes: 'Comprar el pastel',
-//     user: {
-//         _id: '123',
-//         name: 'Fernando'
-//     }
-// }
 
 const initialState = {
     customers: [],
@@ -30,7 +19,7 @@ export const customerReducer = ( state = initialState, action ) => {
         case types.customerAddNew:
             return {
                 ...state,
-                events: [
+                customers: [
                     ...state.customers,
                     action.payload
                 ]
@@ -43,13 +32,13 @@ export const customerReducer = ( state = initialState, action ) => {
             }
 
 
-        // case types.eventUpdated:
-        //     return {
-        //         ...state,
-        //         events: state.events.map(
-        //             e => ( e.id === action.payload.id ) ? action.payload : e
-        //         )
-        //     }
+        case types.customerUpdated:
+            return {
+                ...state,
+                customers: state.customers.map(
+                    c => ( c.Id === action.payload.Id ) ? action.payload : c
+                )
+            }
         
         // case types.eventDeleted:
         //     return {

@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 import { removeError, setError, uiCloseModal, uiOpenModalCompany } from '../../actions/ui';
 import { clearActiveCustomer, customerStartAddNew, customerStartUpdate } from '../../actions/customers';
 import { CompanyCollapsible } from './CompanyCollapsible';
+import { companyLogout } from '../../actions/company';
 
 
 Modal.setAppElement('body');
@@ -28,13 +29,14 @@ const customStyles = {
 
 const initCustomer = {
 
-    Rut: '',
-    CustomerName: '',
-    Email: '',
-    Password: '',
-    Password2: '',
-    LogoUrl: '',
-    Role: '',
+    Id: null,
+    Rut: '11111111-1',
+    CustomerName: 'testing',
+    Email: 'testing@test.com',
+    Password: '123456',
+    Password2: '123456',
+    LogoUrl: 'www.logourl.com',
+    Role: 'Customer',
     Companies: []
 }
 
@@ -47,17 +49,21 @@ export const CustomerModal = () => {
     const { msgError } = useSelector(state => state.ui);
     const dispatch = useDispatch();
 
+    const [changePassword, setChangePassword] = useState( false );
+    
 
 
     const [formValues, setFormValues] = useState(initCustomer);
-    const { Rut, CustomerName, Email, Password, LogoUrl, Role, Password2, Companies } = formValues;
+    const { Rut, CustomerName, Email, Password, LogoUrl, Role, Password2 } = formValues;
 
 
     useEffect(() => {
         // New or Update
         if (activeCustomer) {
             setFormValues(activeCustomer);
+            setChangePassword(false)
         } else {
+            setChangePassword(true)
             setFormValues(initCustomer);
         }
     }, [activeCustomer, setFormValues])
@@ -83,6 +89,7 @@ export const CustomerModal = () => {
         // TODO: cerrar el modal
         dispatch(uiCloseModal());
         dispatch(clearActiveCustomer());
+        dispatch(companyLogout());
         setFormValues(initCustomer);
     }
 
@@ -97,7 +104,7 @@ export const CustomerModal = () => {
         } else if (!validator.isEmail(Email)) {
             dispatch(setError('Email no es valido'))
             return false;
-        } else if (!!!activeCustomer && (Password !== Password2 || Password.length < 6)) {
+        } else if (changePassword && (Password !== Password2 || Password.length < 6)) {
             dispatch(setError('Las contraseñas deben tener al menos 6 caracteres y deben ser iguales'))
             return false
         } else if (Role.trim().length === 0) {
@@ -115,7 +122,7 @@ export const CustomerModal = () => {
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
-
+        console.log(changePassword)
         if (!isFormValid(formValues)) {
             return console.log('invalido')
         }
@@ -124,11 +131,13 @@ export const CustomerModal = () => {
         }
 
 
-        // if ( activeCustomer ) {
-        //     dispatch( customerStartUpdate( formValues ) )
-        // } else {
-        //     dispatch( customerStartAddNew( formValues ) );
-        // }
+        if ( activeCustomer ) {
+            console.log(formValues)
+            dispatch( customerStartUpdate( formValues ) )
+        } else {
+            
+            dispatch( customerStartAddNew( formValues ) );
+        }
 
 
 
@@ -140,6 +149,7 @@ export const CustomerModal = () => {
 
     return (
         <Modal
+            
             isOpen={modalOpen}
             onRequestClose={closeModal}
             style={customStyles}
@@ -176,6 +186,7 @@ export const CustomerModal = () => {
 
                     {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
                 </div>
+
                 <div className="form-group">
                     <label>Nombre</label>
                     <input
@@ -189,6 +200,7 @@ export const CustomerModal = () => {
                     />
                     {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
                 </div>
+                
                 <div className="form-group">
                     <label>Email</label>
                     <input
@@ -204,8 +216,18 @@ export const CustomerModal = () => {
                 </div>
 
 
+                { activeCustomer && (
+                    <div className="input-group mb-3">
+                        <label className="input-group-text col-10">Cambiar Password</label>
+                        <div className="input-group-append">
+                            <div className="input-group-text">
+                                <input type="checkbox"  checked={changePassword} onChange={() => setChangePassword(!changePassword)} />
+                            </div>
+                        </div>
+                    </div>)
+                }
                 {
-                    !activeCustomer &&
+                    (changePassword) &&
                     <div>
                         <div className="form-group">
                             <label>Password</label>
@@ -235,6 +257,7 @@ export const CustomerModal = () => {
                         </div>
                     </div>
                 }
+
                 <div className="form-group">
                     <label>Logo</label>
                     <input
@@ -248,6 +271,7 @@ export const CustomerModal = () => {
                     />
                     {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
                 </div>
+                
                 <div className="form-group">
 
                     <DropdownButton
