@@ -14,14 +14,18 @@ export const customerStartAddNew = ( customerForm ) => {
         try {
             
             let valueForm = { Id, Rut, CustomerName, Email, Password, LogoUrl, Role, Companies };
-            dispatch( customerAddNew(valueForm))
             
             const resp = await fetchWithToken('auth/register', valueForm, 'POST');
             const body = await resp.json();
 
-            const { Data, Message, Error } = body
+            const { Message, title } = body
+
+            if (Message){
+                dispatch( customerAddNew(valueForm))
+            } else {
+                Swal.fire('Error', title, 'error');
+            }
             
-            console.log('customerStartAddNew', body)
 
 
         } catch (error) {
@@ -58,28 +62,27 @@ export const customerStartUpdate = ( customerForm ) => {
         let { Id, Rut, CustomerName, Email, Password, Password2, LogoUrl, Role, Companies } = customerForm;
         Companies = [...companies];
 
-        
-
-
         try {
             
             let valueForm = {};
 
             if(Password2) {
                 valueForm = { Id, Rut, CustomerName, Email, Password, LogoUrl, Role, Companies };
-                dispatch( customerUpdated(valueForm))
             }
             else {
                 valueForm =  { Id, Rut, CustomerName, Email, LogoUrl, Role, Companies };
-                dispatch( customerUpdated(valueForm))
             }
             
 
             const resp = await fetchWithToken('auth/update', valueForm, 'POST');
             const body = await resp.json();
-            const { Data, Message, Error } = body
-            
-            console.log('customerStartUpdate', body)
+            const { Message, title } = body
+
+            if (Message){
+                dispatch( customerUpdated(valueForm))
+            } else {
+                Swal.fire('Error', title, 'error');
+            }
             
 
         } catch (error) {

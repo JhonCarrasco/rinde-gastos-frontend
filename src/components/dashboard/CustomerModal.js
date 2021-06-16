@@ -137,11 +137,7 @@ export const CustomerModal = () => {
         if (!isFormValid(formValues)) {
             return console.log('invalido')
         }
-        // else {
-        //     console.log('valido')
-        // }
-
-
+        
         if (activeCustomer) {
 
             dispatch(customerStartUpdate(formValues))
@@ -261,7 +257,7 @@ export const CustomerModal = () => {
                                 placeholder="Password"
                                 name="Password"
                                 autoComplete="off"
-                                value={Password}
+                                value={Password || ''}
                                 onChange={handleInputChange}
                             />
                             {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
@@ -274,7 +270,7 @@ export const CustomerModal = () => {
                                 placeholder="Confirmar password"
                                 name="Password2"
                                 autoComplete="off"
-                                value={Password2}
+                                value={Password2 || ''}
                                 onChange={handleInputChange}
                             />
                             {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
@@ -315,7 +311,7 @@ export const CustomerModal = () => {
                         placeholder="Role"
                         name="Role"
                         autoComplete="off"
-                        value={Role}
+                        value={Role || ''}
                         onChange={handleInputChange}
                         readOnly
                     />

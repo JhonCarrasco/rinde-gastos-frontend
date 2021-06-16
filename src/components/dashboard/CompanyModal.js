@@ -7,7 +7,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 // import validator from 'validator';
 // import Swal from 'sweetalert2';
 import { removeErrorCompany, setErrorCompany, uiCloseModalCompany } from '../../actions/ui';
-import { clearActiveCompany, companyAddNew, companyDeleted, companyStartAddNew, companyStartUpdate, companyUpdated } from '../../actions/company';
+import { clearActiveCompany, companyAddNew, companyDeleted, companyUpdated } from '../../actions/company';
 
 
 
@@ -243,7 +243,6 @@ export const CompanyModal = () => {
         });
 
         if (field === 'TargetDocument' && RoleSelected !== 'JournalEntry') {
-            console.log('no es JournalEntry es: ', RoleSelected)
             setFormValues({
                 ...formValues,
                 TargetDocument: RoleSelected,
@@ -315,11 +314,7 @@ export const CompanyModal = () => {
         if (!isFormValid(formValues)) {
             return console.log('invalido company')
         }
-        // else {
-        //     console.log('valido company')
-        // }
-
-
+        
         if (activeCompany) {
             
             dispatch(companyUpdated(formValues))
@@ -352,7 +347,7 @@ export const CompanyModal = () => {
             overlayClassName="modal-fondo"
 
         >
-            <div class="d-flex">
+            <div className="d-flex">
                 <button
                     type="button"
                     className="btn btn-danger btn-sm ml-auto"

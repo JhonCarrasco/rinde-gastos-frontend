@@ -10,7 +10,7 @@ import { TableCustomers } from './TableCustomers'
 export const DashboardScreen = () => {
 
     const dispatch = useDispatch();
-    const { customers, activeCustomer } = useSelector( state => state.customer );
+    const { customers } = useSelector( state => state.customer );
         
     useEffect(() => {
         
