@@ -12,8 +12,8 @@ export const LoginScreen = () => {
 
     
     const [ formLoginValues, handleLoginInputChange ] = useForm({
-        lEmail: 'soporte@hitch.cl',
-        lPassword: 'visualk.2021'
+        lEmail: '',
+        lPassword: ''
     });
 
         

@@ -4,12 +4,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import Modal from 'react-modal';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 import Dropdown from 'react-bootstrap/Dropdown';
-import validator from 'validator';
-import Swal from 'sweetalert2';
+// import validator from 'validator';
+// import Swal from 'sweetalert2';
 import { removeError, setError, uiCloseModal, uiOpenModalCompany } from '../../actions/ui';
 import { clearActiveCustomer, customerStartAddNew, customerStartUpdate } from '../../actions/customers';
 import { CompanyCollapsible } from './CompanyCollapsible';
-import { companyLogout } from '../../actions/company';
+import { companyLogout, EnableCustomer } from '../../actions/company';
 
 
 Modal.setAppElement('body');
@@ -30,13 +30,13 @@ const customStyles = {
 const initCustomer = {
 
     Id: null,
-    Rut: '11111111-1',
-    CustomerName: 'testing',
-    Email: 'testing@test.com',
-    Password: '123456',
-    Password2: '123456',
-    LogoUrl: 'www.logourl.com',
-    Role: 'Customer',
+    Rut: null,
+    CustomerName: null,
+    Email: null,
+    Password: null,
+    Password2: null,
+    LogoUrl: null,
+    Role: null,
     Companies: []
 }
 
@@ -49,8 +49,9 @@ export const CustomerModal = () => {
     const { msgError } = useSelector(state => state.ui);
     const dispatch = useDispatch();
 
-    const [changePassword, setChangePassword] = useState( false );
-    
+    const [changePassword, setChangePassword] = useState(false);
+    const [changeEnableCustomer, setChangeEnableCustomer] = useState(false);
+
 
 
     const [formValues, setFormValues] = useState(initCustomer);
@@ -58,15 +59,23 @@ export const CustomerModal = () => {
 
 
     useEffect(() => {
+
+        
         // New or Update
         if (activeCustomer) {
             setFormValues(activeCustomer);
             setChangePassword(false)
+            const enableCustomer = activeCustomer.Companies.some(
+                c => c.EnableIntegration === true
+            );
+            setChangeEnableCustomer(enableCustomer);
         } else {
             setChangePassword(true)
             setFormValues(initCustomer);
         }
-    }, [activeCustomer, setFormValues])
+        
+        
+    }, [activeCustomer, setFormValues, setChangeEnableCustomer])
 
 
 
@@ -101,10 +110,12 @@ export const CustomerModal = () => {
         } else if (CustomerName.trim().length === 0) {
             dispatch(setError('Nombre es requerido'))
             return false;
-        } else if (!validator.isEmail(Email)) {
-            dispatch(setError('Email no es valido'))
-            return false;
-        } else if (changePassword && (Password !== Password2 || Password.length < 6)) {
+        }
+        // else if (!validator.isEmail(Email)) {
+        //     dispatch(setError('Email no es valido'))
+        //     return false;
+        // } 
+        else if (changePassword && (Password !== Password2 || Password.length < 6)) {
             dispatch(setError('Las contraseñas deben tener al menos 6 caracteres y deben ser iguales'))
             return false
         } else if (Role.trim().length === 0) {
@@ -117,26 +128,26 @@ export const CustomerModal = () => {
     }
 
     const handleClickNewCompany = () => {
-        dispatch( uiOpenModalCompany() );
+        dispatch(uiOpenModalCompany());
     }
 
     const handleSubmitForm = (e) => {
         e.preventDefault();
-        console.log(changePassword)
+
         if (!isFormValid(formValues)) {
             return console.log('invalido')
         }
-        else {
-            console.log('valido')
-        }
+        // else {
+        //     console.log('valido')
+        // }
 
 
-        if ( activeCustomer ) {
-            console.log(formValues)
-            dispatch( customerStartUpdate( formValues ) )
+        if (activeCustomer) {
+
+            dispatch(customerStartUpdate(formValues))
         } else {
-            
-            dispatch( customerStartAddNew( formValues ) );
+
+            dispatch(customerStartAddNew(formValues));
         }
 
 
@@ -145,11 +156,16 @@ export const CustomerModal = () => {
 
     }
 
+    const handleEnableCustomer = () => {
+        setChangeEnableCustomer(!changeEnableCustomer)
+        dispatch( EnableCustomer(!changeEnableCustomer) );
+    }
 
 
+    
     return (
         <Modal
-            
+
             isOpen={modalOpen}
             onRequestClose={closeModal}
             style={customStyles}
@@ -157,6 +173,15 @@ export const CustomerModal = () => {
             className="modal"
             overlayClassName="modal-fondo"
         >
+            <div className="d-flex">
+                <button
+                    type="button"
+                    className="btn btn-danger btn-sm ml-auto"
+                    onClick={() => closeModal()}
+                >
+                    <i className="far fa-window-close"></i>
+                </button>
+            </div>
             <h1> {(activeCustomer) ? 'Editar Cliente' : 'Nuevo Cliente'} </h1>
             <hr />
             <form
@@ -167,7 +192,7 @@ export const CustomerModal = () => {
                     msgError &&
                     (
                         <div className="alert-error">
-                            { msgError}
+                            {msgError}
                         </div>
                     )
                 }
@@ -180,11 +205,10 @@ export const CustomerModal = () => {
                         placeholder="12345678-9"
                         name="Rut"
                         autoComplete="off"
-                        value={Rut}
+                        value={Rut || ''}
                         onChange={handleInputChange}
                     />
 
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
                 </div>
 
                 <div className="form-group">
@@ -195,12 +219,12 @@ export const CustomerModal = () => {
                         placeholder="Nombre"
                         name="CustomerName"
                         autoComplete="off"
-                        value={CustomerName}
+                        value={CustomerName || ''}
                         onChange={handleInputChange}
                     />
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
+                    
                 </div>
-                
+
                 <div className="form-group">
                     <label>Email</label>
                     <input
@@ -209,19 +233,19 @@ export const CustomerModal = () => {
                         placeholder="Email"
                         name="Email"
                         autoComplete="off"
-                        value={Email}
+                        value={Email || ''}
                         onChange={handleInputChange}
                     />
 
                 </div>
 
 
-                { activeCustomer && (
+                {activeCustomer && (
                     <div className="input-group mb-3">
                         <label className="input-group-text col-10">Cambiar Password</label>
                         <div className="input-group-append">
                             <div className="input-group-text">
-                                <input type="checkbox"  checked={changePassword} onChange={() => setChangePassword(!changePassword)} />
+                                <input type="checkbox" checked={changePassword} onChange={() => setChangePassword(!changePassword)} />
                             </div>
                         </div>
                     </div>)
@@ -257,6 +281,7 @@ export const CustomerModal = () => {
                         </div>
                     </div>
                 }
+                <hr />
 
                 <div className="form-group">
                     <label>Logo</label>
@@ -266,16 +291,17 @@ export const CustomerModal = () => {
                         placeholder="Url"
                         name="LogoUrl"
                         autoComplete="off"
-                        value={LogoUrl}
+                        value={LogoUrl || ''}
                         onChange={handleInputChange}
                     />
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
+                    
                 </div>
-                
-                <div className="form-group">
+
+                <div className="form-group row">
 
                     <DropdownButton
                         // key={variant}
+                        className="col-3"
                         id="Roles"
                         variant="secondary"
                         title="Roles"
@@ -285,7 +311,7 @@ export const CustomerModal = () => {
                     </DropdownButton>
                     <input
                         type="text"
-                        className="form-control mt-1"
+                        className="form-control col-8"
                         placeholder="Role"
                         name="Role"
                         autoComplete="off"
@@ -293,41 +319,57 @@ export const CustomerModal = () => {
                         onChange={handleInputChange}
                         readOnly
                     />
-                    {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
+                    
                 </div>
+                <hr />
 
 
-                
 
                 <div className="form-group">
-                        
-                        <CompanyCollapsible />
+
+                    <CompanyCollapsible />
                     <div>
                         <button
                             type="button"
-                            className={ activeCustomer ? "btn btn-success fab2" : "btn btn-success fab3"}
-                            onClick={ handleClickNewCompany }
+                            className={activeCustomer ? ( changePassword ? "btn btn-success fab-edit-active-password" : "btn btn-success fab-edit") : ("btn btn-success fab-add")}
+                            onClick={handleClickNewCompany}
                         >
                             <i className="fas fa-plus"></i>
                         </button>
-                        
+
                     </div>
                 </div>
+                <hr />
 
-                        
 
-                        <button
-                            type="submit"
-                            className="btn btn-outline-primary btn-block mt-3"
-                        >
-                            <i className="far fa-save"></i>
-                            <span>{(activeCustomer) ? 'Actualizar' : 'Registrar'}</span>
-                        </button>
+                <div className="input-group mb-4">
+                    <label className="input-group-text col-10">{changeEnableCustomer ? 'Habilitado' : 'Deshabilitado'}</label>
+                    <div className="input-group-append">
+                        <div className="input-group-text">
+                            <input type="checkbox" checked={changeEnableCustomer} onChange={handleEnableCustomer} />
+                        </div>
+                    </div>
+                </div>
+                <hr />
 
-                        {/* <Button variant="primary" type="submit" >
-                    <i className="far fa-save"></i>
-                    <span>{(activeCustomer) ? 'Actualizar' : 'Registrar'}</span>
-                </Button> */}
+                <div className="row justify-content-around">
+                    <button
+                        type="button"
+                        className="btn btn-outline-secondary btn-block mt-3 col-5"
+                        onClick={() => closeModal()}
+                    >
+                        <i className="far fa-window-close"></i>
+                        <span>{' Cerrar'}</span>
+                    </button>
+
+                    <button
+                        type="submit"
+                        className="btn btn-outline-primary btn-block mt-3 col-5"
+                    >
+                        <i className="far fa-save"></i>
+                        <span>{(activeCustomer) ? 'Actualizar' : 'Registrar'}</span>
+                    </button>
+                </div>
 
             </form>
 

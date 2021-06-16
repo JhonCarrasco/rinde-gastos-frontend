@@ -7,16 +7,16 @@ const initialState = {
 };
 
 
-export const companyReducer = ( state = initialState, action ) => {
-    
-    switch ( action.type ) {
-        
+export const companyReducer = (state = initialState, action) => {
+
+    switch (action.type) {
+
         case types.companySetActive:
             return {
                 ...state,
                 activeCompany: action.payload
             }
-        
+
         case types.companyAddNew:
             return {
                 ...state,
@@ -25,7 +25,7 @@ export const companyReducer = ( state = initialState, action ) => {
                     action.payload
                 ]
             }
-    
+
         case types.clearActiveCompany:
             return {
                 ...state,
@@ -37,28 +37,39 @@ export const companyReducer = ( state = initialState, action ) => {
             return {
                 ...state,
                 companies: state.companies.map(
-                    c => ( c.Code === action.payload.Code ) ? action.payload : c
+                    c => (c.Code === action.payload.Code) ? action.payload : c
                 )
             }
-        
-        // case types.eventDeleted:
-        //     return {
-        //         ...state,
-        //         events: state.events.filter(
-        //             e => ( e.id !== state.activeEvent.id )
-        //         ),
-        //         activeEvent: null
-        //     }
+
+        case types.companyDeleted:
+            return {
+                ...state,
+                companies: state.companies.filter(
+                    c => (c.Code !== state.activeCompany.Code)
+                ),
+                activeCompany: null
+            }
 
         case types.companyLoaded:
             return {
                 ...state,
-                companies: [ ...action.payload ]
+                companies: [...action.payload]
             }
 
         case types.companyLogout:
             return {
                 ...initialState
+            }
+
+        case types.companyEnableCustomers:
+            return {
+                ...state,
+                companies: state.companies.map(
+                    c => ({
+                        ...c,
+                        EnableIntegration: action.payload
+                    })
+                )
             }
 
         default:

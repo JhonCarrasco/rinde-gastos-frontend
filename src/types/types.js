@@ -30,6 +30,7 @@ export const types = {
     customerDeleted: '[customer] Customer deleted',
     customerSetActive: '[customer] Set Active',
     customerLogout: '[customer] Logout customer',
+    
 
     companyLoaded: '[company] Companies loaded',
     clearActiveCompany: '[company] Clear active company',
@@ -38,4 +39,5 @@ export const types = {
     companyDeleted: '[company] Company deleted',
     companySetActive: '[company] Set Active Company',
     companyLogout: '[company] Logout company',
+    companyEnableCustomers: '[company] Enable customers',
 }

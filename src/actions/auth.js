@@ -1,4 +1,4 @@
-import { fetchSinToken, fetchConToken } from '../helpers/fetch';
+import { fetchNoToken, fetchWithToken } from '../helpers/fetch';
 import { types } from '../types/types';
 import Swal from 'sweetalert2';
 
@@ -8,13 +8,13 @@ import Swal from 'sweetalert2';
 export const startLogin = ( email, password ) => {
     return async( dispatch ) => {
 
-        const resp = await fetchSinToken( 'auth/login', { email, password }, 'POST' );
+        const resp = await fetchNoToken( 'auth/login', { email, password }, 'POST' );
         const body = await resp.json();
         
         if( body.Token ) {
             localStorage.setItem('token', body.Token );
 
-            const response = await fetchConToken( 'auth/account' );
+            const response = await fetchWithToken( 'auth/account' );
             const data = await response.json();
             
             dispatch( login({
@@ -32,7 +32,7 @@ export const startLogin = ( email, password ) => {
 export const startRegister = ( email, password, name ) => {
     return async( dispatch ) => {
 
-        const resp = await fetchSinToken( 'auth/new', { email, password, name }, 'POST' );
+        const resp = await fetchNoToken( 'auth/new', { email, password, name }, 'POST' );
         const body = await resp.json();
 
         if( body.ok ) {
@@ -54,7 +54,7 @@ export const startRegister = ( email, password, name ) => {
 export const startChecking = () => {
     return async(dispatch) => {
 
-        const resp = await fetchConToken( 'auth/account' );
+        const resp = await fetchWithToken( 'auth/account' );
         const data = await resp.json();
         
 
@@ -84,7 +84,6 @@ export const startLogout = () => {
     return ( dispatch ) => {
 
         localStorage.clear();
-        // dispatch( eventLogout() );
         dispatch( logout() );
     }
 }

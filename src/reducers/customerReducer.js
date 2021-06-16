@@ -40,26 +40,14 @@ export const customerReducer = ( state = initialState, action ) => {
                 )
             }
         
-        // case types.eventDeleted:
-        //     return {
-        //         ...state,
-        //         events: state.events.filter(
-        //             e => ( e.id !== state.activeEvent.id )
-        //         ),
-        //         activeEvent: null
-        //     }
-
+        
         case types.customersLoaded:
             return {
                 ...state,
                 customers: [ ...action.payload ]
             }
 
-        // case types.eventLogout:
-        //     return {
-        //         ...initialState
-        //     }
-
+        
         default:
             return state;
     }
