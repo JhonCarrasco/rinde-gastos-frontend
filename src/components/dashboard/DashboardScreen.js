@@ -20,7 +20,7 @@ export const DashboardScreen = () => {
 
     
     return (
-        <div >
+        <div>
             <Navbar />
             
             {/* Listar Clientes */}

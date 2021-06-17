@@ -22,6 +22,7 @@ export const customerStartAddNew = ( customerForm ) => {
 
             if (Message){
                 dispatch( customerAddNew(valueForm))
+                Swal.fire('success', Message, 'success');
             } else {
                 Swal.fire('Error', title, 'error');
             }
@@ -80,6 +81,7 @@ export const customerStartUpdate = ( customerForm ) => {
 
             if (Message){
                 dispatch( customerUpdated(valueForm))
+                Swal.fire('success', Message, 'success');
             } else {
                 Swal.fire('Error', title, 'error');
             }
