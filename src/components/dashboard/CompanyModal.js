@@ -201,7 +201,7 @@ export const CompanyModal = () => {
 
 
         if (target.name === 'ApplyCustomRules' && target.checked) {
-            setChangeApplyCustomRules(target.checked);
+            setChangeApplyCustomRules(target.checked);            
             setFormValues({
                 ...formValues,
                 ApplyCustomRules: target.checked,
@@ -209,6 +209,7 @@ export const CompanyModal = () => {
             });
         } else if (target.name === 'ApplyCustomRules' && !target.checked) {
             setChangeApplyCustomRules(target.checked);
+            dispatch(ruleLogout());
             setFormValues({
                 ...formValues,
                 ApplyCustomRules: target.checked,
