@@ -11,6 +11,14 @@ export const types = {
     uiSetErrorCompany: '[company] Set Error company',
     uiRemoveErrorCompany: '[company] Remove Error company',
 
+    uiOpenModalRule: '[rule] Open modal rule',
+    uiCloseModalRule: '[rule] Close modal rule',
+    uiSetErrorRule: '[rule] Set Error rule',
+    uiRemoveErrorRule: '[rule] Remove Error rule',
+
+    uiSetErrorsCustomer: '[ui] Add Error Customer',
+    uiRemoveErrorsCustomer: '[ui] Remove Errors Customer',
+
     
     eventSetActive: '[event] Set Active',
     eventLogout: '[event] Logout event',
@@ -40,4 +48,12 @@ export const types = {
     companySetActive: '[company] Set Active Company',
     companyLogout: '[company] Logout company',
     companyEnableCustomers: '[company] Enable customers',
+
+    ruleAddNew: '[rule] Add new rule',
+    ruleSetActive: '[rule] Set Active Rule',
+    ruleLoaded: '[rule] rules loaded',
+    clearActiveRule: '[rule] Clear active rule',
+    ruleDeleted: '[rule] Rule deleted',
+    ruleUpdated: '[rule] Rule updated',
+    ruleLogout: '[rule] Logout rule',
 }

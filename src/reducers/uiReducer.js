@@ -4,13 +4,15 @@ const initialState = {
     modalOpen: false,
     msgError: null,
     companyModalOpen: false,
-    companyMsgError: null
+    companyMsgError: null,
+    ruleModalOpen: false,
+    ruleMsgError: null
 }
 
 
 
 export const uiReducer = (state = initialState, action) => {
-    // console.log(action)
+    
     switch (action.type) {
         case types.uiOpenModal:
             return {
@@ -59,6 +61,31 @@ export const uiReducer = (state = initialState, action) => {
             return {
                 ...state,
                 companyMsgError: null
+            }
+
+        // Rule
+        case types.uiOpenModalRule:
+            return {
+                ...state,
+                ruleModalOpen: true
+            }
+
+        case types.uiCloseModalRule:
+            return {
+                ...state,
+                ruleModalOpen: false
+            }
+
+        case types.uiSetErrorRule:
+            return {
+                ...state,
+                ruleMsgError: action.payload
+            }
+
+        case types.uiRemoveErrorRule:
+            return {
+                ...state,
+                ruleMsgError: null
             }
 
         default:

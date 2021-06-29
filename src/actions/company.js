@@ -1,9 +1,28 @@
-// import Swal from 'sweetalert2';
 
 import { types } from '../types/types';
 
 
+export const companyStartAddNew = ( companyForm ) => {
+    return async( dispatch, getState ) => {
 
+        const { rules } = getState().rule;
+        let { CustomRules, ...args } = companyForm;
+        CustomRules = [...rules];
+
+        try {
+            
+            let valueForm = { CustomRules, ...args };
+            
+            dispatch( companyAddNew(valueForm));
+            
+        } catch (error) {
+            console.log(error);
+        }
+
+        
+
+    }
+}
 
 export const companyAddNew = (company) => ({
     type: types.companyAddNew,
@@ -15,9 +34,31 @@ export const companySetActive = (company) => ({
     payload: company
 });
 
+
 export const clearActiveCompany = () => ({ type: types.clearActiveCompany });
 
+export const companyStartUpdate = ( companyForm ) => {
+    return async( dispatch, getState ) => {
 
+        const { rules } = getState().rule;
+        let { CustomRules, ...args } = companyForm;
+        CustomRules = [...rules];
+
+        try {
+            
+            let valueForm = { CustomRules, ...args };
+            
+            dispatch( companyUpdated(valueForm));
+            
+            
+        } catch (error) {
+            console.log(error);
+        }
+
+        
+
+    }
+}
 
 export const companyUpdated = ( company ) => ({
     type: types.companyUpdated,

@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Modal from 'react-modal';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
-// import validator from 'validator';
-// import Swal from 'sweetalert2';
+import validator from 'validator';
+import Swal from 'sweetalert2';
 import { removeError, setError, uiCloseModal, uiOpenModalCompany } from '../../actions/ui';
 import { clearActiveCustomer, customerStartAddNew, customerStartUpdate } from '../../actions/customers';
 import { CompanyCollapsible } from './CompanyCollapsible';
 import { companyLogout, EnableCustomer } from '../../actions/company';
+import { ruleLogout } from '../../actions/rule';
 
 
 Modal.setAppElement('body');
@@ -30,15 +29,17 @@ const customStyles = {
 const initCustomer = {
 
     Id: null,
-    Rut: null,
-    CustomerName: null,
-    Email: null,
-    Password: null,
-    Password2: null,
-    LogoUrl: null,
-    Role: null,
+    Rut: null || '',
+    CustomerName: null || '',
+    Email: null || '',
+    Password: null || '',
+    Password2: null || '',
+    LogoUrl: null || '',
+    Role: null || 'Customer',
     Companies: []
 }
+
+
 
 
 
@@ -55,12 +56,12 @@ export const CustomerModal = () => {
 
 
     const [formValues, setFormValues] = useState(initCustomer);
-    const { Rut, CustomerName, Email, Password, LogoUrl, Role, Password2 } = formValues;
+    const { Rut, CustomerName, Email, Password, LogoUrl, Password2 } = formValues;
 
 
     useEffect(() => {
 
-        
+
         // New or Update
         if (activeCustomer) {
             setFormValues(activeCustomer);
@@ -73,8 +74,8 @@ export const CustomerModal = () => {
             setChangePassword(true)
             setFormValues(initCustomer);
         }
-        
-        
+
+
     }, [activeCustomer, setFormValues, setChangeEnableCustomer])
 
 
@@ -86,45 +87,50 @@ export const CustomerModal = () => {
         });
     }
 
-    const handleRole = (RoleSelected) => {
-        setFormValues({
-            ...formValues,
-            Role: RoleSelected
-        })
-    }
-
-
+    
     const closeModal = () => {
         // TODO: cerrar el modal
         dispatch(uiCloseModal());
         dispatch(clearActiveCustomer());
         dispatch(companyLogout());
+        dispatch(ruleLogout());
+        dispatch(removeError());
         setFormValues(initCustomer);
     }
 
     const isFormValid = () => {
+        const errors = {};
 
         if (Rut.trim().length === 0) {
-            dispatch(setError('Rut es requerido'))
-            return false;
-        } else if (CustomerName.trim().length === 0) {
-            dispatch(setError('Nombre es requerido'))
-            return false;
+            errors.Rut = 'Rut is required';
         }
-        // else if (!validator.isEmail(Email)) {
-        //     dispatch(setError('Email no es valido'))
-        //     return false;
-        // } 
-        else if (changePassword && (Password !== Password2 || Password.length < 6)) {
-            dispatch(setError('Las contraseñas deben tener al menos 6 caracteres y deben ser iguales'))
-            return false
-        } else if (Role.trim().length === 0) {
-            dispatch(setError('Rol es requerido'))
-            return false;
+        if (CustomerName.trim().length === 0) {
+            errors.CustomerName = 'CustomerName is required';
+        }
+        if (!validator.isEmail(Email)) {
+            errors.Email = 'Email is not valid';
+        }
+        if (changePassword && (Password !== Password2 || Password.length < 6)) {
+            errors.Password = 'Passwords must be at least 6 characters long and must be the same';
         }
 
-        dispatch(removeError());
-        return true;
+        dispatch( setError( errors ));
+        
+        if (Object.entries(errors).length !== 0) {
+            const list = document.createElement('ul');            
+            const messages = Object.entries(errors);
+            messages.forEach(([key, value]) => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = value;
+                list.appendChild(listItem);
+            });
+            Swal.fire('Required or invalid fields', list, 'error');
+            return false;
+        }
+        else {
+            return true;
+        }
+
     }
 
     const handleClickNewCompany = () => {
@@ -134,16 +140,17 @@ export const CustomerModal = () => {
     const handleSubmitForm = (e) => {
         e.preventDefault();
 
-        if (!isFormValid(formValues)) {
-            return console.log('invalido')
+
+        if (!isFormValid(formValues)) {            
+            return console.log('CustomerModal invalid...')
         }
-        
+
         if (activeCustomer) {
-
             dispatch(customerStartUpdate(formValues))
+            dispatch(removeError());
         } else {
-
             dispatch(customerStartAddNew(formValues));
+            dispatch(removeError());
         }
 
 
@@ -154,11 +161,9 @@ export const CustomerModal = () => {
 
     const handleEnableCustomer = () => {
         setChangeEnableCustomer(!changeEnableCustomer)
-        dispatch( EnableCustomer(!changeEnableCustomer) );
+        dispatch(EnableCustomer(!changeEnableCustomer));
     }
 
-
-    
     return (
         <Modal
 
@@ -178,26 +183,18 @@ export const CustomerModal = () => {
                     <i className="far fa-window-close"></i>
                 </button>
             </div>
-            <h1> {(activeCustomer) ? 'Editar Cliente' : 'Nuevo Cliente'} </h1>
+            <h1> {(activeCustomer) ? 'Edit Customer' : 'Add Customer'} </h1>
             <hr />
             <form
                 className="container"
                 onSubmit={handleSubmitForm}
             >
-                {
-                    msgError &&
-                    (
-                        <div className="alert-error">
-                            {msgError}
-                        </div>
-                    )
-                }
-
+                
                 <div className="form-group">
                     <label>Rut</label>
                     <input
                         type="text"
-                        className="form-control"
+                        className={ (msgError && msgError.Rut)? "form-control border border-danger": "form-control"}
                         placeholder="12345678-9"
                         name="Rut"
                         autoComplete="off"
@@ -208,24 +205,24 @@ export const CustomerModal = () => {
                 </div>
 
                 <div className="form-group">
-                    <label>Nombre</label>
+                    <label>Customer Name</label>
                     <input
                         type="text"
-                        className="form-control"
-                        placeholder="Nombre"
+                        className={ (msgError && msgError.CustomerName)? "form-control border border-danger": "form-control"}
+                        placeholder="Customer Name"
                         name="CustomerName"
                         autoComplete="off"
                         value={CustomerName || ''}
                         onChange={handleInputChange}
                     />
-                    
+
                 </div>
 
                 <div className="form-group">
                     <label>Email</label>
                     <input
                         type="text"
-                        className="form-control"
+                        className={ (msgError && msgError.Email)? "form-control border border-danger": "form-control"}
                         placeholder="Email"
                         name="Email"
                         autoComplete="off"
@@ -238,7 +235,7 @@ export const CustomerModal = () => {
 
                 {activeCustomer && (
                     <div className="input-group mb-3">
-                        <label className="input-group-text col-10">Cambiar Password</label>
+                        <label className="input-group-text col-10">Change Password</label>
                         <div className="input-group-append">
                             <div className="input-group-text">
                                 <input type="checkbox" checked={changePassword} onChange={() => setChangePassword(!changePassword)} />
@@ -253,7 +250,7 @@ export const CustomerModal = () => {
                             <label>Password</label>
                             <input
                                 type="password"
-                                className="form-control"
+                                className={ (msgError && msgError.Password)? "form-control border border-danger": "form-control"}
                                 placeholder="Password"
                                 name="Password"
                                 autoComplete="off"
@@ -263,11 +260,11 @@ export const CustomerModal = () => {
                             {/* <small id="emailHelp" className="form-text text-muted">Una descripción corta</small> */}
                         </div>
                         <div className="form-group">
-                            <label>Confirmar Password</label>
+                            <label>Confirm Password</label>
                             <input
                                 type="password"
-                                className="form-control"
-                                placeholder="Confirmar password"
+                                className={ (msgError && msgError.Password)? "form-control border border-danger": "form-control"}
+                                placeholder="Confirm password"
                                 name="Password2"
                                 autoComplete="off"
                                 value={Password2 || ''}
@@ -290,32 +287,7 @@ export const CustomerModal = () => {
                         value={LogoUrl || ''}
                         onChange={handleInputChange}
                     />
-                    
-                </div>
 
-                <div className="form-group row">
-
-                    <DropdownButton
-                        // key={variant}
-                        className="col-3"
-                        id="Roles"
-                        variant="secondary"
-                        title="Roles"
-                    >
-                        <Dropdown.Item eventKey="1" onClick={() => handleRole('Admin')}>Admin</Dropdown.Item>
-                        <Dropdown.Item eventKey="2" onClick={() => handleRole('Customer')}>Customer</Dropdown.Item>
-                    </DropdownButton>
-                    <input
-                        type="text"
-                        className="form-control col-8"
-                        placeholder="Role"
-                        name="Role"
-                        autoComplete="off"
-                        value={Role || ''}
-                        onChange={handleInputChange}
-                        readOnly
-                    />
-                    
                 </div>
                 <hr />
 
@@ -327,7 +299,7 @@ export const CustomerModal = () => {
                     <div>
                         <button
                             type="button"
-                            className={activeCustomer ? ( changePassword ? "btn btn-success fab-edit-active-password" : "btn btn-success fab-edit") : ("btn btn-success fab-add")}
+                            className={activeCustomer ? (changePassword ? "btn btn-success fab-edit-active-password" : "btn btn-success fab-edit") : ("btn btn-success fab-add")}
                             onClick={handleClickNewCompany}
                         >
                             <i className="fas fa-plus"></i>
@@ -338,15 +310,19 @@ export const CustomerModal = () => {
                 <hr />
 
 
-                <div className="input-group mb-4">
-                    <label className="input-group-text col-10">{changeEnableCustomer ? 'Habilitado' : 'Deshabilitado'}</label>
-                    <div className="input-group-append">
-                        <div className="input-group-text">
-                            <input type="checkbox" checked={changeEnableCustomer} onChange={handleEnableCustomer} />
+                {activeCustomer &&
+                    <div>
+                        <div className="input-group mb-4">
+                            <label className="input-group-text col-10">{changeEnableCustomer ? 'Enabled' : 'Disabled'}</label>
+                            <div className="input-group-append">
+                                <div className="input-group-text">
+                                    <input type="checkbox" checked={changeEnableCustomer} onChange={handleEnableCustomer} />
+                                </div>
+                            </div>
                         </div>
+                        <hr />
                     </div>
-                </div>
-                <hr />
+                }
 
                 <div className="row justify-content-around">
                     <button
@@ -355,7 +331,7 @@ export const CustomerModal = () => {
                         onClick={() => closeModal()}
                     >
                         <i className="far fa-window-close"></i>
-                        <span>{' Cerrar'}</span>
+                        <span>{' Close'}</span>
                     </button>
 
                     <button
@@ -363,9 +339,10 @@ export const CustomerModal = () => {
                         className="btn btn-outline-primary btn-block mt-3 col-5"
                     >
                         <i className="far fa-save"></i>
-                        <span>{(activeCustomer) ? 'Actualizar' : 'Registrar'}</span>
+                        <span>{(activeCustomer) ? 'Update Customer' : 'Register Customer'}</span>
                     </button>
                 </div>
+                
 
             </form>
 

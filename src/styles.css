@@ -87,7 +87,7 @@
 
 .fab-edit {
     border-radius: 100%;
-    bottom: 140px;
+    bottom: 195px;
     right: 30px;
     position: fixed;
     font-size: 10px;
@@ -96,7 +96,7 @@
 
 .fab-edit-active-password {
     border-radius: 100%;
-    bottom: -30px;
+    bottom: 25px;
     right: 30px;
     position: fixed;
     font-size: 10px;
@@ -105,9 +105,19 @@
 
 .fab-add {
     border-radius: 100%;
-    bottom: 25px;
+    bottom: 75px;
     right: 30px;
     position: fixed;
     font-size: 10px;
     padding: 10px;   
+}
+
+.fab-add-rule {
+    border-radius: 100%;
+    bottom: -50px;
+    right: -460px;
+    position: relative;
+    font-size: 10px;
+    padding: 10px;   
+    z-index: 1;
 }

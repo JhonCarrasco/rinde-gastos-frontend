@@ -11,7 +11,7 @@ export const CompanyCollapsible = () => {
             <Card>
                 <Card.Header>
                     <Accordion.Toggle as={Button} variant="link" eventKey="1">
-                        Empresas
+                        Companies
                     </Accordion.Toggle>
                 </Card.Header>
                 <Accordion.Collapse eventKey="1">

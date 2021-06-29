@@ -22,3 +22,14 @@ export const setErrorCompany = ( err ) => ({
 });
 
 export const removeErrorCompany = () => ({ type: types.uiRemoveErrorCompany });
+
+// Rule
+export const uiOpenModalRule = () => ({ type: types.uiOpenModalRule });
+export const uiCloseModalRule = () => ({ type: types.uiCloseModalRule });
+
+export const setErrorRule = ( err ) => ({
+    type: types.uiSetErrorRule,
+    payload: err
+});
+
+export const removeErrorRule = () => ({ type: types.uiRemoveErrorRule });

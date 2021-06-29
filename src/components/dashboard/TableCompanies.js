@@ -2,12 +2,13 @@ import React from 'react'
 import BootstrapTable from 'react-bootstrap-table-next';
 import { useDispatch, useSelector } from 'react-redux';
 import { companySetActive } from '../../actions/company';
+import { ruleLoaded } from '../../actions/rule';
 import { uiOpenModalCompany } from '../../actions/ui';
 
 
 export const TableCompanies = () => {
 
-  const { companies } = useSelector(state => state.company);
+  const { activeCompany, companies } = useSelector(state => state.company);
     const dispatch = useDispatch();
 
     
@@ -16,7 +17,7 @@ export const TableCompanies = () => {
 
     const columns = [{
         dataField: 'Name',
-        text: 'Nombre Empresas'
+        text: 'Company Name'
     }
   ];
 
@@ -26,6 +27,7 @@ export const TableCompanies = () => {
         },
         onDoubleClick: (e, row, rowIndex) => {
           dispatch( uiOpenModalCompany() );
+          activeCompany.CustomRules && dispatch( ruleLoaded(activeCompany.CustomRules));
         }        
       };
 

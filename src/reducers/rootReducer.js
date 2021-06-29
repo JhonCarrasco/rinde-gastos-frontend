@@ -4,12 +4,14 @@ import { uiReducer } from './uiReducer';
 import { authReducer } from './authReducer';
 import { customerReducer } from './customerReducer';
 import { companyReducer } from './companyReducer';
+import { ruleReducer } from './ruleReducer';
 
 
 export const rootReducer = combineReducers({
     ui: uiReducer,
     auth: authReducer,
     customer: customerReducer,
-    company: companyReducer
+    company: companyReducer,
+    rule: ruleReducer
 })
 

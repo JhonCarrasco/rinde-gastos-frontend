@@ -5,6 +5,7 @@ import { AddNewFab } from '../ui/AddNewFab';
 import { Navbar } from '../ui/Navbar'
 import { CompanyModal } from './CompanyModal';
 import { CustomerModal } from './CustomerModal';
+import { RulesModal } from './RulesModal';
 import { TableCustomers } from './TableCustomers'
 
 export const DashboardScreen = () => {
@@ -23,20 +24,18 @@ export const DashboardScreen = () => {
         <div>
             <Navbar />
             
-            {/* Listar Clientes */}
+            {/* Customer List */}
             {customers && <TableCustomers customers={ customers }/>}
 
             <AddNewFab />
 
-
-            {/* {
-                (activeCustomer) && <DeleteEventFab />
-            } */}
-            
+              
 
             <CustomerModal />
             
             <CompanyModal />
+
+            <RulesModal />
 
 
         </div>
